@@ -11,6 +11,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarStyle: {
+          borderTopEndRadius: 10,
+          shadowColor: '#000000',
+          shadowOffset: {width: 0, height: -1},
+          shadowOpacity: 0.25,
+          shadowRadius: 4,
+        },
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
       }}>
@@ -24,12 +31,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
+          
         }}
       />
     </Tabs>
