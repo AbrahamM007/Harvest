@@ -16,19 +16,23 @@ type Message = {
 
 const App: React.FC = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const [messageInput, setMessageInput] = useState<string>('');
+  const [messageHistory, setMessageHistory] = useState<{ [key: string]: Message[] }>({
+    '1': [
+      { id: '1', text: "Hey, You're selling lemons for $7 right?", sender: 'me' },
+      { id: '2', text: 'Yeah, You interested in buying?', sender: 'other' },
+      { id: '3', text: "I'd love too! Could I get a small bag?", sender: 'me' },
+      { id: '4', text: "I only have 3 dollars that's why", sender: 'me' },
+      { id: '5', text: "That's fine, I'll give you a bag for $3, does this work?", sender: 'other' },
+    ],
+    '2': [],
+    '3': [],
+  });
 
   const chats: Chat[] = [
     { id: '1', name: 'Izaac Nathanial Marthell', status: 'Available', lastMessage: "Thats fine, I'll give you a bag for $6..." },
     { id: '2', name: 'Joel Chavez', status: 'Away', lastMessage: 'You - 300 LBS?' },
     { id: '3', name: 'Andrea Sullivan', status: 'Away', lastMessage: "I'm not allowed near that place" },
-  ];
-
-  const messages: Message[] = [
-    { id: '1', text: "Hey, You're selling lemons for $7 right?", sender: 'me' },
-    { id: '2', text: 'Yeah, You interested in buying?', sender: 'other' },
-    { id: '3', text: "I'd love too! Could I get a small bag?", sender: 'me' },
-    { id: '4', text: "I only have 3 dollars that's why", sender: 'me' },
-    { id: '5', text: "That's fine, I'll give you a bag for $3, does this work?", sender: 'other' },
   ];
 
   const renderChatItem: ListRenderItem<Chat> = ({ item }) => (
@@ -44,6 +48,18 @@ const App: React.FC = () => {
       <Text>{item.text}</Text>
     </View>
   );
+
+  const handleSendMessage = () => {
+    if (messageInput.trim()) {
+      const newMessage: Message = { id: Date.now().toString(), text: messageInput, sender: 'me' };
+      const updatedMessages = { ...messageHistory };
+      if (selectedChat) {
+        updatedMessages[selectedChat] = [...(updatedMessages[selectedChat] || []), newMessage];
+        setMessageHistory(updatedMessages);
+        setMessageInput('');
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -73,12 +89,21 @@ const App: React.FC = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={messages}
+            data={messageHistory[selectedChat]}
             renderItem={renderMessageItem}
             keyExtractor={(item) => item.id}
             style={styles.messageList}
           />
-          <TextInput placeholder="Type a message" style={styles.input} />
+          <TextInput
+            placeholder="Type a message"
+            style={styles.input}
+            value={messageInput}
+            onChangeText={setMessageInput}
+            onSubmitEditing={handleSendMessage}
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -174,8 +199,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     marginTop: 16,
+    marginBottom: 8,
+  },
+  sendButton: {
+    backgroundColor: '#007bff',
+    padding: 12,
+    borderRadius: 4,
+    alignItems: 'center',
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
 export default App;
-
