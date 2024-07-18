@@ -6,7 +6,7 @@ export default function ProfileScreen() {
         <View style={styles.page}>
             <Label
             type="default"
-            removable="yes"
+            removable="no"
             >Hello</Label>
             <Label
             type="dark"
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     page: {
         backgroundColor: '#ffffff',
         height: '100%',
-        alignItems: 'baseline'
+        alignItems: 'baseline',
+        top: 50
     }
 })
