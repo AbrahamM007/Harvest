@@ -78,7 +78,7 @@ const VendorsScreen = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Vendors</Text>
         <TouchableOpacity>
-          <Icon name="settings" size={24} color="#000" />
+          <Icon name="settings" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
       <View style={styles.searchContainer}>

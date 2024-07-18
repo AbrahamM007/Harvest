@@ -66,16 +66,13 @@ const App: React.FC = () => {
       {selectedChat === null ? (
         <View style={styles.chatListContainer}>
           <Text style={styles.title}>Chats</Text>
-          <TouchableOpacity style={styles.settingsButton}>
-            <Text style={styles.settingsText}>⚙️</Text>
-          </TouchableOpacity>
           <FlatList
             data={chats}
             renderItem={renderChatItem}
             keyExtractor={(item) => item.id}
             style={styles.chatList}
           />
-          <Text style={styles.findVendorsText}>Find some vendors with your favorite produce!</Text>
+          <Text style={styles.findVendorsText}></Text>
         </View>
       ) : (
         <View style={styles.chatContainer}>
@@ -84,9 +81,6 @@ const App: React.FC = () => {
           </TouchableOpacity>
           <View style={styles.chatHeader}>
             <Text style={styles.chatTitle}>Izaac Nathanial Marthell</Text>
-            <TouchableOpacity style={styles.settingsButton}>
-              <Text style={styles.settingsText}>⚙️</Text>
-            </TouchableOpacity>
           </View>
           <FlatList
             data={messageHistory[selectedChat]}
@@ -123,14 +117,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-  },
-  settingsButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
+    marginTop: 30,
   },
   settingsText: {
     fontSize: 24,
+    marginTop: 15,
   },
   chatList: {
     marginBottom: 16,

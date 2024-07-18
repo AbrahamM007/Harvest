@@ -9,9 +9,6 @@ const App: React.FC = () => {
     <ScrollView style={styles.container}>
       <View style={styles.profileSection}>
         <Text style={styles.profileTitle}>My Profile</Text>
-        <TouchableOpacity style={styles.settingsButton}>
-          <Text style={styles.settingsText}>⚙️</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.avatarSection}>
@@ -139,9 +136,7 @@ const styles = StyleSheet.create({
   profileTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  settingsButton: {
-    padding: 8,
+    marginTop:30,
   },
   settingsText: {
     fontSize: 24,
