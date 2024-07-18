@@ -32,6 +32,33 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="basket"
+        options={{
+          title: 'Basket',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'eye' : 'eye-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chatlist"
+        options={{
+          title: 'Chats',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'eye-outline' : 'eye'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
