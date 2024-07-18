@@ -19,7 +19,7 @@ export default function TabLayout() {
         options={{
           title: 'Map',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'location-outline' : 'location'} color={color} />
           ),
         }}
       />
@@ -28,7 +28,7 @@ export default function TabLayout() {
         options={{
           title: 'Vendors',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'pricetag-outline' : 'pricetag'} color={color} />
           ),
         }}
       />
@@ -37,7 +37,7 @@ export default function TabLayout() {
         options={{
           title: 'Basket',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'eye' : 'eye-outline'} color={color} />
+            <TabBarIcon name={focused ? 'basket-outline' : 'basket'} color={color} />
           ),
         }}
       />
@@ -46,7 +46,7 @@ export default function TabLayout() {
         options={{
           title: 'Chats',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'eye-outline' : 'eye'} color={color} />
+            <TabBarIcon name={focused ? 'chatbubbles-outline' : 'chatbubbles'} color={color} />
           ),
         }}
       />
@@ -55,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'person-outline' : 'person'} color={color} />
           ),
         }}
       />

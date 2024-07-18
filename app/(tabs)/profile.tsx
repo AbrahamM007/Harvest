@@ -1,337 +1,252 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Switch, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Switch, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
-const App: React.FC = () => {
+type AvailabilityDay = 'Monday' | 'Wednesday';
+
+type Availability = {
+  [key in AvailabilityDay]: { start: string; end: string };
+};
+
+const ProfileScreen = () => {
   const [isBuyer, setIsBuyer] = useState(true);
-  const [isBartering, setIsBartering] = useState(false);
+  const [profileName, setProfileName] = useState('');
+  const [biography, setBiography] = useState('');
+  const [storeLocation, setStoreLocation] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [availability, setAvailability] = useState<Availability>({
+    Monday: { start: '12:00 PM', end: '8:00 PM' },
+    Wednesday: { start: '12:00 PM', end: '8:00 PM' },
+  });
+  const [prices, setPrices] = useState({ lemon: { five: 3.00, ten: 5.00 } });
+  const [openToBartering, setOpenToBartering] = useState(false);
+  const [photos, setPhotos] = useState([null, null]);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.profileTitle}>My Profile</Text>
-      </View>
-
-      <View style={styles.avatarSection}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>👤</Text>
-        </View>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TextInput style={styles.input} placeholder="Profile name" />
-      
-      <View style={styles.switchContainer}>
-        <TouchableOpacity onPress={() => setIsBuyer(true)} style={[styles.switchButton, isBuyer && styles.activeSwitch]}>
-          <Text>Buyer</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setIsBuyer(false)} style={[styles.switchButton, !isBuyer && styles.activeSwitch]}>
-          <Text>Vendor</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.label}>Biography</Text>
-      <TextInput
-        style={styles.textArea}
-        placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        multiline
-      />
-
-      <Text style={styles.sectionTitle}>Vendor Shop</Text>
-      <TextInput style={styles.input} placeholder="Address for store location" />
-      <TextInput style={styles.input} placeholder="Zip Code" />
-
-      <Text style={styles.subSectionTitle}>Provided Produce</Text>
-      <View style={styles.tagContainer}>
-        <View style={styles.tag}>
-          <Text>Lemon</Text>
-          <TouchableOpacity style={styles.removeTag}>
-            <Text style={styles.removeTagText}>✕</Text>
+        <Image style={styles.profileImage} source={require('../../assets/images/prilll.png')} />
+        <TextInput
+          style={styles.input}
+          placeholder="Profile name"
+          value={profileName}
+          onChangeText={setProfileName}
+        />
+        <View style={styles.switchContainer}>
+          <TouchableOpacity onPress={() => setIsBuyer(true)} style={[styles.switchButton, isBuyer && styles.activeButton]}>
+            <Text style={styles.switchText}>Buyer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsBuyer(false)} style={[styles.switchButton, !isBuyer && styles.activeButton]}>
+            <Text style={styles.switchText}>Vendor</Text>
           </TouchableOpacity>
         </View>
+        <TextInput
+          style={styles.textArea}
+          placeholder="Biography"
+          multiline
+          value={biography}
+          onChangeText={setBiography}
+        />
       </View>
-      <TouchableOpacity style={styles.addTagButton}>
-        <Text style={styles.addTagText}>+</Text>
-      </TouchableOpacity>
 
-      <Text style={styles.subSectionTitle}>Times for Availability</Text>
-      <View style={styles.availabilityContainer}>
-        <View style={styles.dayTimeRow}>
-          <Text style={styles.dayText}>Monday</Text>
-          <TextInput style={styles.timeInput} placeholder="12:00 PM" />
-          <Text style={styles.toText}>To</Text>
-          <TextInput style={styles.timeInput} placeholder="8:00 PM" />
+      {!isBuyer && (
+        <View style={styles.vendorSection}>
+          <TextInput
+            style={styles.input}
+            placeholder="Address for store location"
+            value={storeLocation}
+            onChangeText={setStoreLocation}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Zip Code"
+            value={zipCode}
+            onChangeText={setZipCode}
+          />
+          <Text style={styles.sectionTitle}>Provided Produce</Text>
+          <View style={styles.tagContainer}>
+            <Text style={styles.tag}>Lemon</Text>
+            <TouchableOpacity style={styles.addButton}>
+              <Text style={styles.addButtonText}>➕</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionTitle}>Times for Availability</Text>
+          <View style={styles.availabilityContainer}>
+            {Object.keys(availability).map(day => (
+              <View key={day} style={styles.availabilityRow}>
+                <Text style={styles.availabilityDay}>{day}</Text>
+                <Text style={styles.availabilityTime}>
+                  {availability[day as AvailabilityDay].start} To {availability[day as AvailabilityDay].end}
+                </Text>
+              </View>
+            ))}
+          </View>
+          <View style={styles.tagContainer}>
+            <Text style={styles.tag}>Monday</Text>
+            <Text style={styles.tag}>Wednesday</Text>
+            <TouchableOpacity style={styles.addButton}>
+              <Text style={styles.addButtonText}>➕</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionTitle}>Prices</Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceTag}>Lemon</Text>
+            <Text style={styles.priceText}>$3.00 for 5</Text>
+            <Text style={styles.priceText}>$5.00 for 10</Text>
+          </View>
+          <TouchableOpacity style={styles.addButton}>
+            <Text style={styles.addButtonText}>➕</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.sectionTitle}>Photos</Text>
+          <View style={styles.photosContainer}>
+            {photos.map((photo, index) => (
+              <View key={index} style={styles.photoPlaceholder}>
+                <TouchableOpacity>
+                  <Text style={styles.photoText}>➕</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
         </View>
-        <View style={styles.dayTimeRow}>
-          <Text style={styles.dayText}>Wednesday</Text>
-          <TextInput style={styles.timeInput} placeholder="12:00 PM" />
-          <Text style={styles.toText}>To</Text>
-          <TextInput style={styles.timeInput} placeholder="8:00 PM" />
-        </View>
-      </View>
-
-      <Text style={styles.sectionTitle}>Prices</Text>
-      <View style={styles.tagContainer}>
-        <View style={styles.priceTag}>
-          <Text>Lemon</Text>
-          <TextInput style={styles.priceInput} placeholder="$3.00" />
-          <Text>for</Text>
-          <TextInput style={styles.quantityInput} placeholder="5" />
-          <Text>+</Text>
-          <TextInput style={styles.priceInput} placeholder="$5.00" />
-          <Text>for</Text>
-          <TextInput style={styles.quantityInput} placeholder="10" />
-        </View>
-      </View>
-      <TouchableOpacity style={styles.addTagButton}>
-        <Text style={styles.addTagText}>+</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.subSectionTitle}>Other fruits?</Text>
-      <TouchableOpacity style={styles.addTagButton}>
-        <Text style={styles.addTagText}>+</Text>
-      </TouchableOpacity>
-
-      <View style={styles.barteringContainer}>
-        <Text>Open to bartering?</Text>
-        <Switch value={isBartering} onValueChange={setIsBartering} />
-      </View>
-
-      <Text style={styles.sectionTitle}>Photos</Text>
-      <View style={styles.photosContainer}>
-        <View style={styles.photoPlaceholder}>
-          <Text>🖼️</Text>
-        </View>
-        <View style={styles.photoPlaceholder}>
-          <Text>🖼️</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.addPhotoButton}>
-        <Text style={styles.addPhotoText}>+</Text>
-      </TouchableOpacity>
-
-      <View style={styles.navigation}>
-        <Text></Text>
-        <Text></Text>
-        <Text></Text>
-        <Text></Text>
-        <Text style={styles.activeNav}></Text>
-      </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
   },
   profileSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 20,
+    marginTop:40,
   },
-  profileTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop:30,
-  },
-  settingsText: {
-    fontSize: 24,
-  },
-  avatarSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarText: {
-    fontSize: 32,
-  },
-  addButton: {
-    marginLeft: 16,
-    padding: 8,
-    borderRadius: 16,
-    backgroundColor: '#ddd',
-  },
-  addButtonText: {
-    fontSize: 24,
+  profileImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
+    width: '100%',
     borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 16,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  textArea: {
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    height: 100,
+    textAlignVertical: 'top',
   },
   switchContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   switchButton: {
     flex: 1,
-    padding: 8,
-    borderRadius: 4,
+    padding: 10,
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 5,
+    marginHorizontal: 5,
   },
-  activeSwitch: {
+  activeButton: {
     backgroundColor: '#ddd',
   },
-  label: {
-    marginBottom: 8,
+  switchText: {
+    fontWeight: 'bold',
   },
-  textArea: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    height: 80,
-    textAlignVertical: 'top',
-    marginBottom: 16,
+  vendorSection: {
+    width: '100%',
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 16,
-  },
-  subSectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   tagContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   tag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  removeTag: {
-    marginLeft: 8,
+    padding: 10,
     backgroundColor: '#ddd',
-    borderRadius: 8,
-    padding: 4,
+    borderRadius: 5,
+    marginRight: 10,
   },
-  removeTagText: {
-    fontSize: 12,
-  },
-  addTagButton: {
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 16,
+  addButton: {
+    padding: 10,
+    backgroundColor: '#ccc',
+    borderRadius: 50,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  addTagText: {
-    fontSize: 16,
+  addButtonText: {
+    width:18.5,
+    height:18.5,
+    alignItems:'center',
+    justifyContent:'center',
   },
   availabilityContainer: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
-  dayTimeRow: {
+  availabilityRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  availabilityDay: {
+    fontWeight: 'bold',
+  },
+  availabilityTime: {
+    fontStyle: 'italic',
+  },
+  priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  dayText: {
-    flex: 1,
-  },
-  timeInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    marginHorizontal: 4,
-  },
-  toText: {
-    marginHorizontal: 4,
+    marginBottom: 10,
   },
   priceTag: {
+    padding: 10,
+    backgroundColor: '#ddd',
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  priceText: {
+    marginRight: 10,
+  },
+  barterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 16,
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  priceInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 4,
-    width: 60,
-    marginHorizontal: 4,
-    textAlign: 'center',
-  },
-  quantityInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 4,
-    width: 40,
-    marginHorizontal: 4,
-    textAlign: 'center',
-  },
-  barteringContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+  barterText: {
+    marginRight: 10,
   },
   photosContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
   },
   photoPlaceholder: {
     width: 100,
     height: 100,
-    backgroundColor: '#ddd',
+    backgroundColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addPhotoButton: {
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 16,
-    alignItems: 'center',
-  },
-  addPhotoText: {
+  photoText: {
     fontSize: 24,
-  },
-  navigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-  },
-  activeNav: {
-    fontWeight: 'bold',
   },
 });
 
-export default App;
+export default ProfileScreen;

@@ -132,8 +132,8 @@ const App = () => {
           initialRegion={{
             latitude: 34.0219, // USC VPD Latitude
             longitude: -118.4814, // USC VPD Longitude
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
+            latitudeDelta: 0.005, // Adjusted for 2x zoom
+            longitudeDelta: 0.005, // Adjusted for 2x zoom
           }}
           customMapStyle={mapStyle}
         >
@@ -144,8 +144,9 @@ const App = () => {
               title={marker.title}
               description={marker.description}
               pinColor="red" // Set marker color to red
-              image={require('../../assets/images/PING.png')}
+              image={require('../../assets/images/ping0.png')}
             />
+            
           ))}
         </MapView>
       </View>

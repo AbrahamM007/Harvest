@@ -77,7 +77,7 @@ const App: React.FC = () => {
       ) : (
         <View style={styles.chatContainer}>
           <TouchableOpacity onPress={() => setSelectedChat(null)} style={styles.backButton}>
-            <Text style={styles.backText}>←</Text>
+            <Text style={styles.backText}> ← </Text>
           </TouchableOpacity>
           <View style={styles.chatHeader}>
             <Text style={styles.chatTitle}>Izaac Nathanial Marthell</Text>
@@ -156,7 +156,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   backText: {
-    fontSize: 24,
+    fontSize: 30,
+    marginTop:30,
   },
   chatHeader: {
     flexDirection: 'row',
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
   chatTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginLeft:60,
   },
   messageList: {
     flex: 1,
