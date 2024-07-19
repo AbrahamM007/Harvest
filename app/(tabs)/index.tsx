@@ -5,6 +5,8 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 // Import Map and Marker from react-native-maps
 import MapView, { Marker } from 'react-native-maps';
 
+import {router} from 'expo-router';
+
 // Define the light mode map style
 const mapStyle = [
   {
@@ -143,6 +145,7 @@ const App = () => {
               coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
               title={marker.title}
               description={marker.description}
+              onPress={() => router.navigate('/vendorProfile')} 
               pinColor="red" // Set marker color to red
               image={require('../../assets/images/ping0.png')}
             />

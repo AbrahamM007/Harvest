@@ -61,7 +61,7 @@ const VendorItem = ({ vendor }: { vendor: Vendor }) => {
       <Image source={{ uri: vendor.profileImage }} style={styles.profileImage} />
       <View style={styles.vendorDetails}>
         <Text style={styles.vendorName}>{vendor.name}</Text>
-        <Text style={styles.vendorAddress}>Located at {vendor.address}</Text>
+        <Text style={styles.vendorName}>Located at {vendor.address}</Text>
         <Text style={styles.vendorProducts}>Selling: {vendor.products.join(', ')}</Text>
         <Text style={styles.vendorRating}>Freshness Rating: {vendor.freshnessRating}</Text>
       </View>
