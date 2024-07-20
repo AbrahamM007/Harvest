@@ -7,9 +7,9 @@ const IzaacProfile = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.navigate('/')}>
-          <Text style={styles.backText}> ← </Text>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.navigate('/explore')}>
+        <Text style={styles.backText}> ← </Text>
+      </TouchableOpacity>
         <Text style={styles.headerText}>Izaac's Profile</Text>
       </View>
       <View style={styles.profileSection}>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginRight: 300,
   },
   header: {
-    // flexDirection: 'row', 
+    
     alignItems: 'center',
     justifyContent:'space-between',
     paddingHorizontal: 16,
@@ -103,11 +103,13 @@ const styles = StyleSheet.create({
   backArrow: {
     fontSize: 24,
     color: '#000',
+    
+    marginTop: 50,
   },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#000',
   },
   profileSection: {
     alignItems: 'center',
@@ -270,7 +272,6 @@ const styles = StyleSheet.create({
   activeNavItem: {
     fontWeight: 'bold',
   },
-
 });
 
 export default IzaacProfile;
