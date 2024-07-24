@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    
   },
   chatListContainer: {
     flex: 1,
@@ -127,9 +127,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   chatItem: {
+    backgroundColor: '#fff',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginBottom: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   chatName: {
     fontSize: 16,
@@ -175,15 +181,24 @@ const styles = StyleSheet.create({
   },
   messageItem: {
     padding: 16,
-    borderRadius: 8,
-    marginVertical: 4,
+    marginBottom: 16,
+    borderRadius: 60,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 7,
+    elevation: 2,
   },
   myMessage: {
-    backgroundColor: '#e1ffc7',
+    backgroundColor: '#fff',
     alignSelf: 'flex-end',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 7,
   },
   otherMessage: {
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#f2f2f2',
     alignSelf: 'flex-start',
   },
   input: {
@@ -197,7 +212,7 @@ const styles = StyleSheet.create({
   sendButton: {
     backgroundColor: '#007bff',
     padding: 12,
-    borderRadius: 4,
+    borderRadius: 260,
     alignItems: 'center',
   },
   sendButtonText: {
