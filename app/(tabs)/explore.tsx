@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Make sure to install this library
 import { router } from 'expo-router';
-// Import your navigation library
-// import { useRouter } from 'your-navigation-library'; 
 
 const myImage = require('@/assets/images/1717.png');
 
@@ -19,7 +17,7 @@ type Vendor = {
 const vendors: Vendor[] = [
   {
     id: '1',
-    name: "Izaac Nathanial Marthell's Stand",
+    name: "Izaac Marthell's Stand",
     address: '1227 W 92st PL',
     products: ['Lemon'],
     freshnessRating: 4.5,
@@ -51,22 +49,18 @@ const vendors: Vendor[] = [
   },
   {
     id: '5',
-    name: "Abraham Mora-Tadeo's Stand",
-    address: '1246 S Spruce ST ',
-    products: ['Dragon Fruit'],
-    freshnessRating: 5.0,
+    name: "Kevin Hernandez's Stand",
+    address: '1830 E 61st St',
+    products: ['Lemon', 'Tomato'],
+    freshnessRating: 3.0,
     profileImage: myImage,
   },
 ];
 
 const VendorItem = ({ vendor }: { vendor: Vendor }) => {
-  // Uncomment and use your navigation hook if needed
-  // const router = useRouter();
-
   return (
     <TouchableOpacity
-      
-       onPress={() => router.navigate('/Vendorlistprofile')}
+      onPress={() => router.navigate('/Vendorlistprofile')}
     >
       <View style={styles.vendorContainer}>
         <Image source={vendor.profileImage} style={styles.profileImage} />
@@ -74,7 +68,10 @@ const VendorItem = ({ vendor }: { vendor: Vendor }) => {
           <Text style={styles.vendorName}>{vendor.name}</Text>
           <Text style={styles.vendorAddress}>Located at {vendor.address}</Text>
           <Text style={styles.vendorProducts}>Selling: {vendor.products.join(', ')}</Text>
-          <Text style={styles.vendorRating}>Freshness Rating: {vendor.freshnessRating}</Text>
+          <View style={styles.ratingContainer}>
+            <Icon name="leaf" size={14} color="#86D861" />
+            <Text style={styles.vendorRating}>{vendor.freshnessRating}</Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -82,26 +79,53 @@ const VendorItem = ({ vendor }: { vendor: Vendor }) => {
 };
 
 const VendorsScreen = () => {
+  const [searchText, setSearchText] = useState('');
+  const [filteredVendors, setFilteredVendors] = useState(vendors);
+  const [selectedFilter, setSelectedFilter] = useState('');
+
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    filterVendors(selectedFilter, text);
+  };
+
+  const handleFilter = (filter: string) => {
+    setSelectedFilter(filter);
+    filterVendors(filter, searchText);
+  };
+
+  const filterVendors = (filter: string, search: string) => {
+    const newFilteredVendors = vendors.filter(vendor =>
+      vendor.products.some(product =>
+        product.toLowerCase().includes(search.toLowerCase())
+      ) && (!filter || vendor.products.includes(filter))
+    );
+    setFilteredVendors(newFilteredVendors);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Icon name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Vendors</Text>
-        <TouchableOpacity>
-          <Icon name="settings" size={24} color="#fff" />
-        </TouchableOpacity>
       </View>
-      <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#000" />
-        <TextInput style={styles.searchInput} placeholder=" Vendor Shops" />
-        <TouchableOpacity>
-          <Icon name="close" size={20} color="#000" />
+      <View style={styles.filterContainer}>
+        <TouchableOpacity style={styles.filterButton} onPress={() => handleFilter('Lemon')}>
+          <Text style={styles.filterButtonText}>Lemon</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton} onPress={() => handleFilter('Pomegranate')}>
+          <Text style={styles.filterButtonText}>Pomegranate</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton} onPress={() => handleFilter('Tomato')}>
+          <Text style={styles.filterButtonText}>Tomato</Text>
+        </TouchableOpacity>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchText}
+          onChangeText={handleSearch}
+        />
       </View>
       <FlatList
-        data={vendors}
+        data={filteredVendors}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <VendorItem vendor={item} />}
       />
@@ -112,39 +136,53 @@ const VendorsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff', // Set background color to white
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginTop: 80,
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 14,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginTop: 50,
+    color: '#86D861',
   },
-  searchContainer: {
+  filterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: '#FFF1DD',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     marginBottom: 16,
+    justifyContent: 'space-between',
+  },
+  filterButton: {
+    backgroundColor: '#FFD000',
+    borderRadius: 8,
+    padding: 8,
+    marginRight: 8,
+  },
+  filterButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   searchInput: {
     flex: 1,
     marginLeft: 8,
+    backgroundColor: '#FFF1DD',
+    borderRadius: 8,
+    paddingHorizontal: 8,
   },
   vendorContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF1DD',
     padding: 16,
     marginBottom: 16,
-    borderRadius: 8,
+    borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -152,10 +190,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 25,
-    marginTop: 20,
+    
+    
   },
   vendorDetails: {
     marginLeft: 16,
@@ -164,6 +203,7 @@ const styles = StyleSheet.create({
   vendorName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#000',
   },
   vendorAddress: {
     fontSize: 14,
@@ -172,10 +212,17 @@ const styles = StyleSheet.create({
   vendorProducts: {
     fontSize: 14,
     marginTop: 4,
+    color: '#000',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
   },
   vendorRating: {
     fontSize: 14,
-    marginTop: 4,
+    marginLeft: 4,
+    color: '#86D861',
   },
 });
 

@@ -1,11 +1,11 @@
 // Import React
 import React from 'react';
 // Import required components
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
 // Import Map and Marker from react-native-maps
 import MapView, { Marker } from 'react-native-maps';
 
-import {router} from 'expo-router';
+import { router } from 'expo-router';
 
 // Define the light mode map style
 const mapStyle = [
@@ -127,8 +127,11 @@ const markers = [
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Map</Text>
+      </View>
+      <SafeAreaView style={styles.mapContainer}>
         <MapView
           style={styles.map}
           initialRegion={{
@@ -145,26 +148,41 @@ const App = () => {
               coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
               title={marker.title}
               description={marker.description}
-              onPress={() => router.navigate('/vendorProfile')} 
+              onPress={() => router.navigate('/vendorProfile')}
               pinColor="red" // Set marker color to red
               image={require('../../assets/images/ping0.png')}
             />
-            
           ))}
         </MapView>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
   },
-  container: {
-    ...StyleSheet.absoluteFillObject,
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
+    paddingTop: 80, // Adjust as needed
+    paddingBottom: 30, // Adjust as needed
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    zIndex: 1, // Ensure header is above the map
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#86D861', // Fully opaque text color
+  },
+  mapContainer: {
+    flex: 1,
+    marginTop: 0, // Remove margin to ensure full-screen map
   },
   map: {
     ...StyleSheet.absoluteFillObject,

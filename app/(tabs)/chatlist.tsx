@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, ListRenderItem } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type Chat = {
   id: string;
@@ -10,7 +12,8 @@ type Chat = {
 
 type Message = {
   id: string;
-  text: string;
+  text?: string;
+  image?: string;
   sender: 'me' | 'other';
 };
 
@@ -24,28 +27,29 @@ const App: React.FC = () => {
       { id: '3', text: "I'd love too! Could I get a small bag?", sender: 'me' },
       { id: '4', text: "I only have 3 dollars that's why", sender: 'me' },
       { id: '5', text: "That's fine, I'll give you a bag for $3, does this work?", sender: 'other' },
+      { id: '6', image: 'https://via.placeholder.com/150', sender: 'other' },
     ],
     '2': [],
     '3': [],
   });
 
   const chats: Chat[] = [
-    { id: '1', name: 'Izaac Nathanial Marthell', status: 'Available', lastMessage: "Thats fine, I'll give you a bag for $6..." },
-    { id: '2', name: 'Joel Chavez', status: 'Away', lastMessage: 'You - 300 LBS?' },
-    { id: '3', name: 'Andrea Sullivan', status: 'Away', lastMessage: "I'm not allowed near that place" },
+    { id: '1', name: 'Izaac Nathanial Marthell', status: 'Online', lastMessage: "Thats fine, I'll give you a bag for $6..." },
+    { id: '2', name: 'Joel Chavez', status: 'Online', lastMessage: 'You - 300 LBS?' },
+    { id: '3', name: 'Andrea Sullivan', status: 'Online', lastMessage: "I'm not allowed near that place" },
   ];
 
-  const renderChatItem: ListRenderItem<Chat> = ({ item }) => (
+  const renderChatItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity style={styles.chatItem} onPress={() => setSelectedChat(item.id)}>
       <Text style={styles.chatName}>{item.name}</Text>
-      <Text style={styles.chatStatus}>{item.status}</Text>
       <Text style={styles.chatLastMessage}>{item.lastMessage}</Text>
     </TouchableOpacity>
   );
 
-  const renderMessageItem: ListRenderItem<Message> = ({ item }) => (
+  const renderMessageItem = ({ item }: { item: Message }) => (
     <View style={[styles.messageItem, item.sender === 'me' ? styles.myMessage : styles.otherMessage]}>
-      <Text>{item.text}</Text>
+      {item.text && <Text style={styles.messageText}>{item.text}</Text>}
+      {item.image && <Image source={{ uri: item.image }} style={styles.messageImage} />}
     </View>
   );
 
@@ -61,6 +65,20 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSelectImage = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response: ImagePickerResponse) => {
+      if (response.assets && response.assets.length > 0) {
+        const selectedImage = response.assets[0].uri;
+        const newMessage: Message = { id: Date.now().toString(), image: selectedImage, sender: 'me' };
+        const updatedMessages = { ...messageHistory };
+        if (selectedChat) {
+          updatedMessages[selectedChat] = [...(updatedMessages[selectedChat] || []), newMessage];
+          setMessageHistory(updatedMessages);
+        }
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       {selectedChat === null ? (
@@ -72,15 +90,15 @@ const App: React.FC = () => {
             keyExtractor={(item) => item.id}
             style={styles.chatList}
           />
-          <Text style={styles.findVendorsText}></Text>
+          <Text style={styles.findVendorsText}>Find some vendors with your favorite produce!</Text>
         </View>
       ) : (
         <View style={styles.chatContainer}>
           <TouchableOpacity onPress={() => setSelectedChat(null)} style={styles.backButton}>
-            <Text style={styles.backText}> ← </Text>
+            <Ionicons name="arrow-back" size={30} color="#86D861" />
           </TouchableOpacity>
           <View style={styles.chatHeader}>
-            <Text style={styles.chatTitle}>Izaac Nathanial Marthell</Text>
+            <Text style={styles.chatTitle}>Izaac's Chat</Text>
           </View>
           <FlatList
             data={messageHistory[selectedChat]}
@@ -88,16 +106,20 @@ const App: React.FC = () => {
             keyExtractor={(item) => item.id}
             style={styles.messageList}
           />
-          <TextInput
-            placeholder="Type a message"
-            style={styles.input}
-            value={messageInput}
-            onChangeText={setMessageInput}
-            onSubmitEditing={handleSendMessage}
-          />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={handleSelectImage}>
+              <Ionicons name="camera" size={30} color="#86D861" />
+            </TouchableOpacity>
+            <TextInput
+              placeholder="Type a message"
+              style={styles.input}
+              value={messageInput}
+              onChangeText={setMessageInput}
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+              <Ionicons name="send" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -107,43 +129,33 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     padding: 16,
-    
   },
   chatListContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 30,
-  },
-  settingsText: {
-    fontSize: 24,
-    marginTop: 15,
+    color: '#86D861',
+    textAlign: 'center',
+    marginBottom: 30,
+    marginTop: 60,
   },
   chatList: {
     marginBottom: 16,
   },
   chatItem: {
-    backgroundColor: '#fff',
+    borderTopWidth: 1,
     padding: 16,
     marginBottom: 16,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 2,
+    borderColor: '#CECECE',
   },
   chatName: {
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  chatStatus: {
-    fontSize: 14,
-    color: '#888',
   },
   chatLastMessage: {
     fontSize: 14,
@@ -160,21 +172,22 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 8,
-  },
-  backText: {
-    fontSize: 30,
-    marginTop:30,
+    marginTop: 20,
   },
   chatHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    borderBottomWidth: 1,
+    borderColor: '#CECECE',
   },
   chatTitle: {
-    fontSize: 18,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginLeft:60,
+    color: '#86D861',
+    marginBottom: 16,
+    
   },
   messageList: {
     flex: 1,
@@ -182,42 +195,53 @@ const styles = StyleSheet.create({
   messageItem: {
     padding: 16,
     marginBottom: 16,
-    borderRadius: 60,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 7,
+    shadowRadius: 4,
     elevation: 2,
   },
   myMessage: {
-    backgroundColor: '#fff',
+    backgroundColor: '#86D861',
     alignSelf: 'flex-end',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 7,
+    borderRadius: 60,
+    color: '#074100',
   },
   otherMessage: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#A9EE89',
     alignSelf: 'flex-start',
+    borderRadius: 20,
+  },
+  messageText: {
+    color: '#000',
+  },
+  messageImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 4,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    marginTop: 16,
-    marginBottom: 8,
+    flex: 1,
+    backgroundColor: '#DDFFCD',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    marginRight: 8,
+    marginLeft: 15,
   },
   sendButton: {
-    backgroundColor: '#007bff',
-    padding: 12,
-    borderRadius: 260,
-    alignItems: 'center',
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: '#86D861',
+    borderRadius: 8,
+    padding: 8,
+    marginLeft: 8,
   },
 });
 

@@ -11,19 +11,13 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    tint: '#ffffff', // Example hex code for light mode
+    background: '#FFFFFF', // Example hex code for light background
+    // Add other colors as needed
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    tint: '#1frddh', // Example hex code for dark mode
+    background: '#000000', // Example hex code for dark background
+    // Add other colors as needed
   },
 };
