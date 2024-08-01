@@ -1,252 +1,284 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Avatar, IconButton, Divider } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker'; // Use this if you are using Expo
 
-type AvailabilityDay = 'Monday' | 'Wednesday';
+const myimage = require('@/assets/images/images (1).jpeg');
+const mimage = require('@/assets/images/images (2).jpeg');
+const yimage = require('@/assets/images/images (3).jpeg');
+const myimag = require('@/assets/images/images (9).jpeg');
 
-type Availability = {
-  [key in AvailabilityDay]: { start: string; end: string };
-};
+const Profile = () => {
+  const [avatarUri, setAvatarUri] = useState('https://example.com/avatar.jpg');
+  const [name, setName] = useState('Edgar Ramos');
+  const [address, setAddress] = useState('723 S Gerhart Ave, Cali');
+  const [about, setAbout] = useState('My name is Edgar, I like lemons, sell me lemons please');
+  const [photos, setPhotos] = useState([
+    myimage,
+    mimage,
+    yimage,
+    myimag,
+  ]);
 
-const ProfileScreen = () => {
-  const [isBuyer, setIsBuyer] = useState(true);
-  const [profileName, setProfileName] = useState('');
-  const [biography, setBiography] = useState('');
-  const [storeLocation, setStoreLocation] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [availability, setAvailability] = useState<Availability>({
-    Monday: { start: '12:00 PM', end: '8:00 PM' },
-    Wednesday: { start: '12:00 PM', end: '8:00 PM' },
-  });
-  const [prices, setPrices] = useState({ lemon: { five: 3.00, ten: 5.00 } });
-  const [openToBartering, setOpenToBartering] = useState(false);
-  const [photos, setPhotos] = useState([null, null]);
+  const handlePickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      setAvatarUri(uri);
+    }
+  };
+
+  const handleAddPhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      setPhotos([...photos, uri]);
+    }
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Your Profile</Text>
       <View style={styles.profileSection}>
-        <Image style={styles.profileImage} source={require('../../assets/images/prilll.png')} />
-        <TextInput
-          style={styles.input}
-          placeholder="Profile name"
-          value={profileName}
-          onChangeText={setProfileName}
-        />
-        <View style={styles.switchContainer}>
-          <TouchableOpacity onPress={() => setIsBuyer(true)} style={[styles.switchButton, isBuyer && styles.activeButton]}>
-            <Text style={styles.switchText}>Buyer</Text>
+        <View style={styles.avatarContainer}>
+          <TouchableOpacity onPress={handlePickImage}>
+            <Avatar.Image
+              size={100}
+              source={{ uri: avatarUri }}
+              style={styles.avatar}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsBuyer(false)} style={[styles.switchButton, !isBuyer && styles.activeButton]}>
-            <Text style={styles.switchText}>Vendor</Text>
-          </TouchableOpacity>
+          <IconButton
+            icon="camera"
+            size={20}
+            style={styles.closeIcon}
+            iconColor="white"
+            onPress={handlePickImage}
+          />
         </View>
-        <TextInput
-          style={styles.textArea}
-          placeholder="Biography"
-          multiline
-          value={biography}
-          onChangeText={setBiography}
-        />
+        <View style={styles.infoContainer}>
+          <Text style={styles.sectionHeader}>Information</Text>
+          <View style={styles.editableContainer}>
+            <Text style={styles.label}>Display Name</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+              />
+              <IconButton icon="pencil" size={15} style={styles.editIcon} iconColor='#074100' />
+            </View>
+          </View>
+          <View style={styles.editableContainer}>
+            <Text style={styles.label}>Address</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={address}
+                onChangeText={setAddress}
+              />
+              <IconButton icon="pencil" size={15} style={styles.editIcon} iconColor='#074100' />
+            </View>
+          </View>
+        </View>
       </View>
-
-      {!isBuyer && (
-        <View style={styles.vendorSection}>
+      <Divider style={styles.divider} />
+      <View style={styles.contentContainer}>
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>About me</Text>
           <TextInput
             style={styles.input}
-            placeholder="Address for store location"
-            value={storeLocation}
-            onChangeText={setStoreLocation}
+            value={about}
+            onChangeText={setAbout}
+            multiline
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Zip Code"
-            value={zipCode}
-            onChangeText={setZipCode}
-          />
-          <Text style={styles.sectionTitle}>Provided Produce</Text>
-          <View style={styles.tagContainer}>
-            <Text style={styles.tag}>Lemon</Text>
-            <TouchableOpacity style={styles.addButton}>
-              <Text style={styles.addButtonText}>➕</Text>
-            </TouchableOpacity>
+        </View>
+        <Divider style={styles.divider} />
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Shop Setup</Text>
+          <Text style={styles.subHeader}>Produce and Prices</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>🍋 Lemons</Text>
+            <Text style={styles.info}>$3.00 for 6, $5.00 for 11</Text>
+            <IconButton icon="plus" size={20} style={styles.addIcon} iconColor="white" />
           </View>
-          <Text style={styles.sectionTitle}>Times for Availability</Text>
-          <View style={styles.availabilityContainer}>
-            {Object.keys(availability).map(day => (
-              <View key={day} style={styles.availabilityRow}>
-                <Text style={styles.availabilityDay}>{day}</Text>
-                <Text style={styles.availabilityTime}>
-                  {availability[day as AvailabilityDay].start} To {availability[day as AvailabilityDay].end}
-                </Text>
-              </View>
-            ))}
+          <Divider style={styles.divider} />
+          <Text style={styles.subHeader}>Availability</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>Mondays: 12:00 PM to 7:00 PM</Text>
+            <IconButton icon="pencil" size={15} style={styles.editIcon} iconColor='#074100' />
           </View>
-          <View style={styles.tagContainer}>
-            <Text style={styles.tag}>Monday</Text>
-            <Text style={styles.tag}>Wednesday</Text>
-            <TouchableOpacity style={styles.addButton}>
-              <Text style={styles.addButtonText}>➕</Text>
-            </TouchableOpacity>
+          <View style={styles.row}>
+            <Text style={styles.label}>Wednesdays: 12:00 PM to 7:00 PM</Text>
+            <IconButton icon="pencil" size={15} style={styles.editIcon} iconColor='#074100' />
           </View>
-          <Text style={styles.sectionTitle}>Prices</Text>
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceTag}>Lemon</Text>
-            <Text style={styles.priceText}>$3.00 for 5</Text>
-            <Text style={styles.priceText}>$5.00 for 10</Text>
-          </View>
-          <TouchableOpacity style={styles.addButton}>
-            <Text style={styles.addButtonText}>➕</Text>
-          </TouchableOpacity>
-          
-          <Text style={styles.sectionTitle}>Photos</Text>
-          <View style={styles.photosContainer}>
+          <IconButton icon="plus" size={20} style={styles.addButton} iconColor='#074100' />
+        </View>
+        <Divider style={styles.divider} />
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Photos</Text>
+          <View style={styles.photoContainer}>
             {photos.map((photo, index) => (
-              <View key={index} style={styles.photoPlaceholder}>
-                <TouchableOpacity>
-                  <Text style={styles.photoText}>➕</Text>
-                </TouchableOpacity>
+              <View key={index} style={styles.photoWrapper}>
+                <Image source={{ uri: photo }} style={styles.photo} />
+                <IconButton icon="close" size={20} style={styles.photoIcon} iconColor="white" />
               </View>
             ))}
+            <IconButton icon="plus" size={20} style={styles.addButton} iconColor='#074100' onPress={handleAddPhoto} />
           </View>
         </View>
-      )}
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+    color: '#86D861',
+    marginBottom: 60,
+    marginTop: 80,
   },
   profileSection: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  avatarContainer: {
+    position: 'relative',
+  },
+  avatar: {
+    borderRadius: 50,
+    marginLeft: 40,
+    marginRight: -40,
+  },
+  closeIcon: {
+    position: 'absolute',
+    bottom: 75,
+    right: -40,
+    backgroundColor: '#074100',
+    borderRadius: 15,
+  },
+  infoContainer: {
+    marginLeft: 100,
+    justifyContent: 'center',
+
+
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#0C6C00',
+  },
+  label: {
+    fontSize: 18,
+    color: '#0C6C00',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop:40,
+    flex: 30,
+    
   },
-  profileImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
+  info: {
+    fontSize: 16,
     marginBottom: 10,
   },
-  textArea: {
-    width: '100%',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    height: 100,
-    textAlignVertical: 'top',
+  contentContainer: {
+    backgroundColor: '#FFF1DD',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginHorizontal: 20,
   },
-  switchContainer: {
-    flexDirection: 'row',
+  section: {
     marginBottom: 20,
   },
-  switchButton: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  activeButton: {
-    backgroundColor: '#ddd',
-  },
-  switchText: {
-    fontWeight: 'bold',
-  },
-  vendorSection: {
-    width: '100%',
-  },
-  sectionTitle: {
+  subHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  tagContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  tag: {
-    padding: 10,
-    backgroundColor: '#ddd',
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  addButton: {
-    padding: 10,
-    backgroundColor: '#ccc',
-    borderRadius: 50,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    width:18.5,
-    height:18.5,
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  availabilityContainer: {
-    marginBottom: 10,
-  },
-  availabilityRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    color: '#0C6C00',
+    marginTop: 10,
     marginBottom: 5,
   },
-  availabilityDay: {
-    fontWeight: 'bold',
+  sectionContent: {
+    fontSize: 16,
   },
-  availabilityTime: {
-    fontStyle: 'italic',
-  },
-  priceContainer: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-  },
-  priceTag: {
-    padding: 10,
-    backgroundColor: '#ddd',
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  priceText: {
-    marginRight: 10,
-  },
-  barterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  barterText: {
-    marginRight: 10,
-  },
-  photosContainer: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  photoPlaceholder: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
+  addButton: {
+    alignSelf: 'flex-start',
   },
-  photoText: {
-    fontSize: 24,
+  photoContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  photoWrapper: {
+    position: 'relative',
+    marginBottom: 10,
+  },
+  photo: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+  },
+  photoIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#074100',
+    borderRadius: 15,
+  },
+  editIcon: {
+    marginLeft: 5,
+  },
+  addIcon: {
+    backgroundColor: '#074100',
+    borderRadius: 10,
+  },
+  divider: {
+    marginVertical: 10,
+  },
+  editableContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  input: {
+    fontSize: 16,
+    color: '#0C6C00',
+    flex: 1,
+    marginRight: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCC',
+    padding: 5,
+    width: '100%',
   },
 });
 
-export default ProfileScreen;
+export default Profile;

@@ -140,10 +140,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    marginTop: 80,
+    
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 14,
+    marginTop: 80,
   },
   headerTitle: {
     fontSize: 32,
