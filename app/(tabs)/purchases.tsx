@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
+import { RNCamera, BarCodeReadEvent } from 'react-native-camera'; // Import BarCodeReadEvent type
 
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState('Home');
+  const [qrValue, setQrValue] = useState('');
+  const [scannedValue, setScannedValue] = useState<string | null>(null); // Explicitly define the type
+
+  // Declare the type for the 'e' parameter
+  const handleBarcodeRead = (e: BarCodeReadEvent) => {
+    setScannedValue(e.data);
+    setCurrentScreen('Receipt');
+  };
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -14,6 +24,8 @@ const App = () => {
         return <CreateReceiptScreen />;
       case 'SaleCode':
         return <SaleCodeScreen />;
+      case 'Scanner':
+        return <ScannerScreen />;
       default:
         return <HomeScreen />;
     }
@@ -23,10 +35,9 @@ const App = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Purchases</Text>
       <Text style={styles.subHeader}>Hello Edgar! Ready to Scan for your purchase?</Text>
-      <Image 
-        source={{ uri: 'https://via.placeholder.com/150' }} 
-        style={styles.image} 
-      />
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Scanner')}>
+        <Text style={styles.buttonText}>Scan QR Code</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Receipt')}>
         <Text style={styles.buttonText}>Create a sale QR?</Text>
       </TouchableOpacity>
@@ -38,12 +49,18 @@ const App = () => {
       <Text style={styles.header}>Purchases</Text>
       <Text style={styles.subHeader}>Your Receipt</Text>
       <View style={styles.receipt}>
-        <Text style={styles.item}>5 Lemons: $3</Text>
-        <Text style={styles.item}>2 Lemons: + $1.50</Text>
-        <Text style={styles.baseCost}>Base Cost $4.50</Text>
-        <Text style={styles.item}>Sales Tax: + $0.43</Text>
-        <Text style={styles.item}>App fee: + $0.45</Text>
-        <Text style={styles.totalCost}>Total Cost $5.38</Text>
+        {scannedValue ? (
+          <Text style={styles.item}>Scanned: {scannedValue}</Text>
+        ) : (
+          <>
+            <Text style={styles.item}>5 Lemons: $3</Text>
+            <Text style={styles.item}>2 Lemons: + $1.50</Text>
+            <Text style={styles.baseCost}>Base Cost $4.50</Text>
+            <Text style={styles.item}>Sales Tax: + $0.43</Text>
+            <Text style={styles.item}>App fee: + $0.45</Text>
+            <Text style={styles.totalCost}>Total Cost $5.38</Text>
+          </>
+        )}
         <Text style={styles.subHeader}>Is this order Correct?</Text>
         <TouchableOpacity style={styles.smallButton} onPress={() => setCurrentScreen('CreateReceipt')}>
           <Text style={styles.smallButtonText}>Yes, Proceed to payout</Text>
@@ -72,7 +89,10 @@ const App = () => {
       <TouchableOpacity style={styles.plusButton}>
         <Text style={styles.plusButtonText}>+</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('SaleCode')}>
+      <TouchableOpacity style={styles.button} onPress={() => {
+        setQrValue('Sample Receipt Data');
+        setCurrentScreen('SaleCode');
+      }}>
         <Text style={styles.buttonText}>Create Sale QR</Text>
       </TouchableOpacity>
     </View>
@@ -82,15 +102,32 @@ const App = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Purchases</Text>
       <Text style={styles.subHeader}>Sale Code</Text>
-      <Image 
-        source={{ uri: 'https://via.placeholder.com/150' }} 
-        style={styles.image} 
+      <QRCode
+        value={qrValue || 'Sample Receipt Data'}
+        size={150}
       />
       <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Home')}>
         <Text style={styles.buttonText}>Edit QR code</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Home')}>
         <Text style={styles.buttonText}>Close QR code</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const ScannerScreen = () => (
+    <View style={styles.container}>
+      <RNCamera
+        style={styles.camera}
+        onBarCodeRead={handleBarcodeRead}
+        captureAudio={false}
+      >
+        <View style={styles.cameraOverlay}>
+          <Text style={styles.header}>Scan a QR Code</Text>
+        </View>
+      </RNCamera>
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Home')}>
+        <Text style={styles.buttonText}>Cancel</Text>
       </TouchableOpacity>
     </View>
   );
@@ -193,6 +230,16 @@ const styles = StyleSheet.create({
   plusButtonText: {
     color: '#fff',
     fontSize: 24,
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+  cameraOverlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });
 

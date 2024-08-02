@@ -55,7 +55,7 @@ const Profile = () => {
         <TouchableOpacity onPress={() => router.navigate('/')}>
           <Text style={styles.backText}> ← </Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>Your Profile</Text>
+        <Text style={styles.headerText}>Issac's Profile</Text>
       </View>
       <View style={styles.profileSection}>
         <View style={styles.avatarContainer}>
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     borderRadius: 50,
+    marginLeft: 50,
   },
   closeIcon: {
     position: 'absolute',
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   infoContainer: {
-    marginLeft: 20,
+    marginLeft: 50,
   },
   sectionHeader: {
     fontSize: 18,
