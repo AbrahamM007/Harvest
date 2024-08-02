@@ -1,79 +1,138 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Avatar, IconButton, Divider } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker'; // Use this if you are using Expo
 import { router } from 'expo-router';
-import {AirbnbRating, Rating} from 'react-native-ratings';
 
-const IzaacProfile = () => {
+const myimage = require('@/assets/images/images (1).jpeg');
+const mimage = require('@/assets/images/images (2).jpeg');
+const yimage = require('@/assets/images/images (3).jpeg');
+const myimag = require('@/assets/images/images (9).jpeg');
+
+const Profile = () => {
+  const [avatarUri, setAvatarUri] = useState('https://example.com/avatar.jpg');
+  const [name, setName] = useState('Edgar Ramos');
+  const [address, setAddress] = useState('723 S Gerhart Ave, Cali');
+  const [about, setAbout] = useState('My name is Edgar, I like lemons, sell me lemons please');
+  const [photos, setPhotos] = useState([
+    myimage,
+    mimage,
+    yimage,
+    myimag,
+  ]);
+
+  const handlePickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      setAvatarUri(uri);
+    }
+  };
+
+  const handleAddPhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      setPhotos([...photos, uri]);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.navigate('/explore')}>
-        <Text style={styles.backText}> ← </Text>
-      </TouchableOpacity>
-        <Text style={styles.headerText}>Izaac's Profile</Text>
+          <Text style={styles.backText}> ← </Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Your Profile</Text>
       </View>
       <View style={styles.profileSection}>
-        <View style={styles.profileImage}>
-          <Image source={require('../assets/images/emptyprofile.png')} style={styles.image} />
+        <View style={styles.avatarContainer}>
+          <TouchableOpacity onPress={handlePickImage}>
+            <Avatar.Image
+              size={100}
+              source={{ uri: avatarUri }}
+              style={styles.avatar}
+            />
+          </TouchableOpacity>
+          
         </View>
-        <Text style={styles.produceText}>Provided Produce</Text>
-        <View style={styles.produceItem}>
-          <View style={styles.produceIcon}><Text style={styles.iconText}>🍋</Text></View>
-          <Text style={styles.produceItemText}>Lemon</Text>
-        </View>
-        <Text style={styles.locationText}>Store location</Text>
-        <Text style={styles.addressText}>1227 W 92st PL, California 90022</Text>
-        <View>
-    
-
-      <Rating 
-      type='rocket' // heart, star, bell, rocket
-        ratingCount={5}
-        showRating={false}
-        ratingTextColor="red"
-        // readonly
-        // showReadOnlyText={false}
-        startingValue={5}
-        onSwipeRating={rating => console.log(`Swiping: ${rating}`)}
-      />
-    </View>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Biography</Text>
-        <Text style={styles.bioText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Prices</Text>
-        <View style={styles.priceItem}>
-          <View style={styles.produceIcon}><Text style={styles.iconText}>🍋</Text></View>
-          <Text style={styles.priceText}>Lemon</Text>
-          <View style={styles.priceDetails}>
-            <Text style={styles.priceDetailText}>$3.00 for 6</Text>
-            <Text style={styles.priceDetailText}>$5.00 for 11</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.sectionHeader}>Information</Text>
+          <View style={styles.editableContainer}>
+            <Text style={styles.label}>Display Name</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+              />
+              
+            </View>
+          </View>
+          <View style={styles.editableContainer}>
+            <Text style={styles.label}>Address</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                value={address}
+                onChangeText={setAddress}
+              />
+              
+            </View>
           </View>
         </View>
-        <Text style={styles.barterText}>This Vendor is allowing bartering!</Text>
       </View>
+      <Divider style={styles.divider} />
       <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Times of Availability</Text>
-        <Text style={styles.availabilityText}>Monday 12:00 PM To 7:00 PM</Text>
-        <Text style={styles.availabilityText}>Wednesday 12:00 PM To 8:00 PM</Text>
+        <Text style={styles.sectionHeader}>About me</Text>
+        <TextInput
+          style={styles.input}
+          value={about}
+          onChangeText={setAbout}
+          multiline
+        />
       </View>
+      <Divider style={styles.divider} />
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Shop Setup</Text>
+        <Text style={styles.produceText}>Produce and Prices</Text>
+        <View style={styles.produceItem}>
+          <Text style={styles.produceItemText}>🍋 Lemons</Text>
+          <Text style={styles.priceDetailText}>$3.00 for 6, $5.00 for 11</Text>
+        </View>
+        <Divider style={styles.divider} />
+        <Text style={styles.produceText}>Availability</Text>
+        <View style={styles.produceItem}>
+          <Text style={styles.availabilityText}>Mondays: 12:00 PM to 7:00 PM</Text>
+        </View>
+        <View style={styles.produceItem}>
+          <Text style={styles.availabilityText}>Wednesdays: 12:00 PM to 7:00 PM</Text>
+        </View>
+      </View>
+      <Divider style={styles.divider} />
       <View style={styles.section}>
         <Text style={styles.sectionHeader}>Photos</Text>
-        <View style={styles.photos}>
-          <View style={styles.photoPlaceholder} />
-          <View style={styles.photoPlaceholder} />
-          <View style={styles.photoPlaceholder} />
-          <View style={styles.photoPlaceholder} />
+        <View style={styles.photoContainer}>
+          {photos.map((photo, index) => (
+            <View key={index} style={styles.photoWrapper}>
+              <Image source={{ uri: photo }} style={styles.photo} />
+              <IconButton icon="close" size={20} style={styles.photoIcon} iconColor="white" />
+            </View>
+          ))}
+          
         </View>
-        <TouchableOpacity onPress={() => router.navigate('/chatlist')} style={styles.contactButton}>
-          <Text style={styles.contactButtonText}>Contact?</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.footer}>
       </View>
     </ScrollView>
   );
@@ -84,97 +143,74 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  backText: {
-    fontSize: 30,
-    marginTop:30,
-    marginRight: 300,
-  },
   header: {
-    
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
-    
+    marginTop:30,
   },
-  backArrow: {
-    fontSize: 24,
+  backText: {
+    fontSize: 30,
     color: '#000',
-    
-    marginTop: 50,
   },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000',
+    marginRight:135,
   },
   profileSection: {
+    flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#CCCCCC',
-    marginBottom: 8,
-    overflow: 'hidden',
+  avatarContainer: {
+    position: 'relative',
   },
-  image: {
-    width: '100%',
-    height: '100%',
+  avatar: {
     borderRadius: 50,
   },
-  produceText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  produceItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  produceIcon: {
-    width: 30,
-    height: 30,
+  closeIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#074100',
     borderRadius: 15,
-    backgroundColor: '#CCCCCC',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  iconText: {
+  infoContainer: {
+    marginLeft: 20,
+  },
+  sectionHeader: {
     fontSize: 18,
-  },
-  produceItemText: {
-    fontSize: 16,
-    marginLeft: 8,
-    color: '#000',
-  },
-  locationText: {
-    fontSize: 16,
-    marginVertical: 8,
-    color: '#000',
-  },
-  addressText: {
-    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#000',
+    color: '#0C6C00',
   },
-  leafIcons: {
-    flexDirection: 'row',
-    marginBottom: 16,
+  label: {
+    fontSize: 16,
+    color: '#0C6C00',
+    marginBottom: 4,
   },
-  leafIcon: {
-    fontSize: 24,
-    marginHorizontal: 4,
+  input: {
+    fontSize: 16,
+    color: '#0C6C00',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCC',
+    padding: 5,
+    flex: 1,
+  },
+  editIcon: {
+    marginLeft: 5,
+  },
+  divider: {
+    marginVertical: 10,
   },
   section: {
     paddingHorizontal: 16,
@@ -183,95 +219,54 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  sectionHeader: {
-    fontSize: 18,
+  produceText: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#000',
-  },
-  bioText: {
-    fontSize: 16,
-    color: '#666666',
-    textAlign: 'center',
-  },
-  priceItem: {
+    color: '#0C6C00',
     marginBottom: 8,
   },
-  priceText: {
-    fontSize: 16,
-    marginBottom: 4,
-    color: '#000',
-  },
-  priceDetails: {
+  produceItem: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  produceItemText: {
+    fontSize: 16,
+    color: '#000',
   },
   priceDetailText: {
     fontSize: 16,
     color: '#000',
   },
-  barterText: {
-    fontSize: 16,
-    color: '#666666',
-    textAlign: 'center',
-  },
   availabilityText: {
     fontSize: 16,
-    marginBottom: 4,
     color: '#000',
-    textAlign: 'center',
   },
-  photos: {
+  photoContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom:50,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  photoPlaceholder: {
+  photoWrapper: {
+    position: 'relative',
+    marginBottom: 10,
+  },
+  photo: {
     width: 80,
     height: 80,
-    backgroundColor: '#CCCCCC',
-    borderRadius: 8,
+    borderRadius: 10,
   },
-  footer: {
-    alignItems: 'center',
-    marginVertical: 16,
-    backgroundColor: '#FFFFFF',
-    marginBottom: 50,
+  photoIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#074100',
+    borderRadius: 15,
   },
-  vendorName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#000',
-  },
-  contactButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#000',
-    borderRadius: 4,
-    alignItems: 'center',
-    marginVertical: 16,
-    
-  },
-  contactButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  navigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 8,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  navItem: {
-    fontSize: 16,
-    color: '#000',
-  },
-  activeNavItem: {
-    fontWeight: 'bold',
+  addButton: {
+    alignSelf: 'flex-start',
   },
 });
 
-export default IzaacProfile;
+export default Profile;
