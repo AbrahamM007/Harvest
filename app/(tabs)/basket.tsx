@@ -1,99 +1,199 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
-const PurchasesScreen = () => {
-  return (
+const App = () => {
+  const [currentScreen, setCurrentScreen] = useState('Home');
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'Home':
+        return <HomeScreen />;
+      case 'Receipt':
+        return <ReceiptScreen />;
+      case 'CreateReceipt':
+        return <CreateReceiptScreen />;
+      case 'SaleCode':
+        return <SaleCodeScreen />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+
+  const HomeScreen = () => (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Basket</Text>
-      </View>
-      <View style={styles.message}>
-        <Text style={styles.messageText}>Hello Edgar!</Text>
-        <Text style={styles.messageText}>Ready to Scan for your purchase?</Text>
-      </View>
-      <View style={styles.cameraContainer}>
-        <View style={styles.camera}>
-          <View style={styles.lens} />
-        </View>
-      </View>
-      <View style={styles.createQrCode}>
-        <Text style={styles.createQrCodeText}>Need to make a QR code for a sale?</Text>
-        <View style={styles.plusButton}>
-          <Text style={styles.plusButtonText}>+</Text>
-        </View>
+      <Text style={styles.header}>Purchases</Text>
+      <Text style={styles.subHeader}>Hello Edgar! Ready to Scan for your purchase?</Text>
+      <Image 
+        source={{ uri: 'https://via.placeholder.com/150' }} 
+        style={styles.image} 
+      />
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Receipt')}>
+        <Text style={styles.buttonText}>Create a sale QR?</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const ReceiptScreen = () => (
+    <View style={styles.container}>
+      <Text style={styles.header}>Purchases</Text>
+      <Text style={styles.subHeader}>Your Receipt</Text>
+      <View style={styles.receipt}>
+        <Text style={styles.item}>5 Lemons: $3</Text>
+        <Text style={styles.item}>2 Lemons: + $1.50</Text>
+        <Text style={styles.baseCost}>Base Cost $4.50</Text>
+        <Text style={styles.item}>Sales Tax: + $0.43</Text>
+        <Text style={styles.item}>App fee: + $0.45</Text>
+        <Text style={styles.totalCost}>Total Cost $5.38</Text>
+        <Text style={styles.subHeader}>Is this order Correct?</Text>
+        <TouchableOpacity style={styles.smallButton} onPress={() => setCurrentScreen('CreateReceipt')}>
+          <Text style={styles.smallButtonText}>Yes, Proceed to payout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.smallButton} onPress={() => setCurrentScreen('Home')}>
+          <Text style={styles.smallButtonText}>No, Return to Scanner</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
+
+  const CreateReceiptScreen = () => (
+    <View style={styles.container}>
+      <Text style={styles.header}>Purchases</Text>
+      <Text style={styles.subHeader}>Create Receipt</Text>
+      <View style={styles.itemInput}>
+        <Text style={styles.label}>Lemon</Text>
+        <TextInput style={styles.input} value="$3.00" />
+        <TextInput style={styles.input} value="5" />
+      </View>
+      <View style={styles.itemInput}>
+        <Text style={styles.label}>Lemon</Text>
+        <TextInput style={styles.input} value="$1.50" />
+        <TextInput style={styles.input} value="2" />
+      </View>
+      <TouchableOpacity style={styles.plusButton}>
+        <Text style={styles.plusButtonText}>+</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('SaleCode')}>
+        <Text style={styles.buttonText}>Create Sale QR</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const SaleCodeScreen = () => (
+    <View style={styles.container}>
+      <Text style={styles.header}>Purchases</Text>
+      <Text style={styles.subHeader}>Sale Code</Text>
+      <Image 
+        source={{ uri: 'https://via.placeholder.com/150' }} 
+        style={styles.image} 
+      />
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Home')}>
+        <Text style={styles.buttonText}>Edit QR code</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentScreen('Home')}>
+        <Text style={styles.buttonText}>Close QR code</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  return renderScreen();
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    paddingVertical: 20,
+    backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   header: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 25,
+    marginBottom: 10,
+    color: '#0C6C00',
   },
-  message: {
-    padding: 20,
-  },
-  messageText: {
+  subHeader: {
     fontSize: 16,
+    marginBottom: 20,
     color: '#333',
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
-  cameraContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  camera: {
-    width: 200,
+  image: {
+    width: 150,
     height: 150,
-    backgroundColor: '#ddd',
+    marginBottom: 20,
     borderRadius: 10,
   },
-  lens: {
-    width: 60,
-    height: 40,
-    backgroundColor: '#888',
-    borderRadius: 10,
-    position: 'absolute',
-    top: 55,
-    left: 70,
-  },
-  createQrCode: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-  createQrCodeText: {
-    fontSize: 16,
-    color: '#333',
+  button: {
+    backgroundColor: '#0C6C00',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
     marginBottom: 10,
   },
-  plusButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#ddd',
-    justifyContent: 'center',
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  smallButton: {
+    backgroundColor: '#074100',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  smallButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  receipt: {
     alignItems: 'center',
+    marginBottom: 10,
+  },
+  item: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  baseCost: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  totalCost: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 20,
+  },
+  itemInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 5,
+    marginHorizontal: 5,
+    borderRadius: 5,
+    width: 50,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  plusButton: {
+    backgroundColor: '#0C6C00',
+    padding: 10,
+    borderRadius: 50,
+    marginBottom: 20,
   },
   plusButtonText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
+    fontSize: 24,
   },
 });
 
-export default PurchasesScreen;
+export default App;
