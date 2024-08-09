@@ -10,10 +10,10 @@ const yimage = require('@/assets/images/images (3).jpeg');
 const myimag = require('@/assets/images/images (9).jpeg');
 
 const Profile = () => {
-  const [avatarUri, setAvatarUri] = useState('https://example.com/avatar.jpg');
-  const [name, setName] = useState('Edgar Ramos');
+  const [avatarUri, setAvatarUri] = useState('@/assets/images/daniel-craig-007.jpg-303a730.png');
+  const [name, setName] = useState('Issac');
   const [address, setAddress] = useState('723 S Gerhart Ave, Cali');
-  const [about, setAbout] = useState('My name is Edgar, I like lemons, sell me lemons please');
+  const [about, setAbout] = useState('My name is Issac, I like lemons, sell me lemons please');
   const [photos, setPhotos] = useState([
     myimage,
     mimage,
@@ -55,7 +55,7 @@ const Profile = () => {
         <TouchableOpacity onPress={() => router.navigate('/explore')}>
           <Text style={styles.backText}> ← </Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>Your Profile</Text>
+        <Text style={styles.headerText}>Issac's Profile</Text>
       </View>
       <View style={styles.profileSection}>
         <View style={styles.avatarContainer}>
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     borderRadius: 50,
+    marginLeft: 50,
   },
   closeIcon: {
     position: 'absolute',
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   infoContainer: {
-    marginLeft: 20,
+    marginLeft: 50,
   },
   sectionHeader: {
     fontSize: 18,
